@@ -1,10 +1,14 @@
 package com.gps.service.GPS.controllers;
 
 import com.gps.service.GPS.models.User;
+import com.gps.service.GPS.models.security.CustomUserDetails;
 import com.gps.service.GPS.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -27,8 +31,8 @@ public class UserController {
         return ResponseEntity.ok(userService.getUsers());
     }
 
-    @PostMapping(value = "/login", consumes = "application/json")
-    public String loginInfo(@RequestBody User userInfo) {
-        return userInfo.toString();
+    @GetMapping(path = "/me")
+    public ResponseEntity<User> getCurrentUser() {
+        return ResponseEntity.ok(((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser());
     }
 }
