@@ -3,6 +3,7 @@ package com.gps.service.GPS.controllers;
 import com.gps.service.GPS.exceptions.BusinessException;
 import com.gps.service.GPS.models.User;
 import com.gps.service.GPS.models.dto.UserLoginDTO;
+import com.gps.service.GPS.models.dto.UserRegisterDTO;
 import com.gps.service.GPS.models.security.CustomUserDetails;
 import com.gps.service.GPS.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +40,10 @@ public class UserController {
     @PostMapping(path = "/login")
     public ResponseEntity<User> loginUser(@RequestBody final UserLoginDTO userLoginDTO) throws BusinessException {
         return ResponseEntity.ok(userService.login(userLoginDTO));
+    }
+
+    @PostMapping(path = "/register")
+    public ResponseEntity<User> registerUser(@RequestBody final UserRegisterDTO userRegisterDTO) throws BusinessException {
+        return ResponseEntity.ok(userService.register(userRegisterDTO));
     }
 }
