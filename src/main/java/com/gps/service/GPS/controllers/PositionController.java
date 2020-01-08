@@ -4,6 +4,7 @@ import com.gps.service.GPS.exceptions.BusinessException;
 import com.gps.service.GPS.models.Position;
 import com.gps.service.GPS.models.dto.PositionDTO;
 import com.gps.service.GPS.models.dto.RequestDTO;
+import com.gps.service.GPS.models.dto.UpdateDTO;
 import com.gps.service.GPS.services.PositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +35,8 @@ public class PositionController {
     }
 
     @GetMapping(path = "update")
-    public ResponseEntity<Position> updatePositionById(@RequestParam final Long positionId, @RequestParam final PositionDTO positionDTO) throws BusinessException {
-        return ResponseEntity.ok(positionService.updatePositionById(positionId, positionDTO));
+    public ResponseEntity<Position> updatePositionById(@RequestBody final UpdateDTO updateDTO) throws BusinessException {
+        return ResponseEntity.ok(positionService.updatePositionById(updateDTO));
     }
 
     @GetMapping(path = "get")

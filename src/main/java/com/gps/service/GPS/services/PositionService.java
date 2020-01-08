@@ -4,6 +4,7 @@ import com.gps.service.GPS.exceptions.BusinessException;
 import com.gps.service.GPS.models.Position;
 import com.gps.service.GPS.models.dto.PositionDTO;
 import com.gps.service.GPS.models.dto.RequestDTO;
+import com.gps.service.GPS.models.dto.UpdateDTO;
 
 import java.util.List;
 
@@ -41,11 +42,10 @@ public interface PositionService {
     /**
      * Update a position
      *
-     * @param positionId  the id of the position to be updated.
-     * @param positionDTO the new position data.
+     * @param updateDTO data used for update.
      * @return the position updated.
      */
-    Position updatePositionById(Long positionId, PositionDTO positionDTO);
+    Position updatePositionById(UpdateDTO updateDTO) throws BusinessException;
 
     /**
      * Retrieve a position.
