@@ -3,6 +3,7 @@ package com.gps.service.GPS.services;
 import com.gps.service.GPS.exceptions.BusinessException;
 import com.gps.service.GPS.models.Position;
 import com.gps.service.GPS.models.dto.PositionDTO;
+import com.gps.service.GPS.models.dto.RequestDTO;
 import com.gps.service.GPS.repository.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @author solcanm
@@ -53,8 +53,19 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public void deletePositionById(Long positionId) {
-        positionRepository.deleteById(positionId);
+    public Long deletePositionById(RequestDTO requestDTO) throws BusinessException {
+
+        if (Objects.isNull(requestDTO)) {
+            throw new BusinessException(401, "Body null");
+        }
+
+        try {
+            Long positionId = Long.valueOf(requestDTO.getData());
+            positionRepository.deleteById(positionId);
+            return positionId;
+        } catch (Exception e) {
+            throw new BusinessException(400, "Invalid positionId");
+        }
     }
 
     @Override
@@ -63,8 +74,17 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public Optional<Position> retrievePositionById(Long positionId) {
-        return positionRepository.findById(positionId);
+    public Position retrievePositionById(RequestDTO requestDTO) throws BusinessException {
+        if (Objects.isNull(requestDTO)) {
+            throw new BusinessException(401, "Body null");
+        }
+
+        try {
+            Long positionId = Long.valueOf(requestDTO.getData());
+            return positionRepository.findById(positionId).orElse(null);
+        } catch (Exception e) {
+            throw new BusinessException(400, "Invalid positionId");
+        }
     }
 
     private Position createPosition(PositionDTO positionDTO) {

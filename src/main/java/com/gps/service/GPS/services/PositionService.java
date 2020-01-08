@@ -3,9 +3,9 @@ package com.gps.service.GPS.services;
 import com.gps.service.GPS.exceptions.BusinessException;
 import com.gps.service.GPS.models.Position;
 import com.gps.service.GPS.models.dto.PositionDTO;
+import com.gps.service.GPS.models.dto.RequestDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author solcanm
@@ -34,9 +34,9 @@ public interface PositionService {
     /**
      * Delete a position.
      *
-     * @param positionId - the id of the position to be deleted.
+     * @param requestDTO - the request data.
      */
-    void deletePositionById(Long positionId);
+    Long deletePositionById(RequestDTO requestDTO) throws BusinessException;
 
     /**
      * Update a position
@@ -50,8 +50,8 @@ public interface PositionService {
     /**
      * Retrieve a position.
      *
-     * @param positionId the id of the position to be retrieved.
+     * @param requestDTO request data.
      * @return the retrieved position.
      */
-    Optional<Position> retrievePositionById(Long positionId);
+    Position retrievePositionById(RequestDTO requestDTO) throws BusinessException;
 }
