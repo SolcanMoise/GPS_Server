@@ -24,9 +24,12 @@ public class PositionController {
     @Autowired
     private PositionService positionService;
 
+    @Autowired
+    UserController userController;
+
     @PostMapping(path = "save")
     public ResponseEntity<Position> savePosition(@RequestBody final PositionDTO positionDTO) throws BusinessException {
-        return ResponseEntity.ok(positionService.addNewPosition(positionDTO));
+        return ResponseEntity.ok(positionService.addNewPosition(positionDTO, getUserId()));
     }
 
     @GetMapping(path = "delete")
@@ -36,7 +39,7 @@ public class PositionController {
 
     @GetMapping(path = "update")
     public ResponseEntity<Position> updatePositionById(@RequestBody final UpdateDTO updateDTO) throws BusinessException {
-        return ResponseEntity.ok(positionService.updatePositionById(updateDTO));
+        return ResponseEntity.ok(positionService.updatePositionById(updateDTO, getUserId()));
     }
 
     @GetMapping(path = "get")
@@ -44,8 +47,17 @@ public class PositionController {
         return ResponseEntity.ok(positionService.retrievePositionById(requestDTO));
     }
 
+    @GetMapping(path = "getAllUserPositions")
+    public ResponseEntity<List<Position>> retrieveUserPositions(@RequestBody final RequestDTO requestDTO) throws BusinessException {
+        return ResponseEntity.ok(positionService.retrieveUserPositions(requestDTO));
+    }
+
     @GetMapping
     public ResponseEntity<List<Position>> getPositions() {
         return ResponseEntity.ok(positionService.getPositions());
+    }
+
+    private Long getUserId() {
+        return userController.getCurrentUser().getBody().getId();
     }
 }

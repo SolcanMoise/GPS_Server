@@ -6,10 +6,12 @@ import com.gps.service.GPS.models.dto.PositionDTO;
 import com.gps.service.GPS.models.dto.RequestDTO;
 import com.gps.service.GPS.models.dto.UpdateDTO;
 import com.gps.service.GPS.repository.PositionRepository;
+import com.gps.service.GPS.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,8 +26,11 @@ public class PositionServiceImpl implements PositionService {
     @Autowired
     private PositionRepository positionRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
-    public Position addNewPosition(PositionDTO positionDTO) throws BusinessException {
+    public Position addNewPosition(PositionDTO positionDTO, Long userId) throws BusinessException {
 
         if (Objects.isNull(positionDTO)) {
             throw new BusinessException(401, "Body null!");
@@ -43,7 +48,7 @@ public class PositionServiceImpl implements PositionService {
             throw new BusinessException(400, "Date cannot be null");
         }
 
-        Position basicPosition = createPosition(positionDTO);
+        Position basicPosition = createPosition(positionDTO, userId);
 
         return positionRepository.save(basicPosition);
     }
@@ -70,7 +75,7 @@ public class PositionServiceImpl implements PositionService {
     }
 
     @Override
-    public Position updatePositionById(UpdateDTO updateDTO) throws BusinessException {
+    public Position updatePositionById(UpdateDTO updateDTO, Long userId) throws BusinessException {
 
         if (Objects.isNull(updateDTO)) {
             throw new BusinessException(401, "Body null");
@@ -92,7 +97,7 @@ public class PositionServiceImpl implements PositionService {
             Long positionId = Long.valueOf(updateDTO.getPositionId());
             boolean isPositionFind = positionRepository.existsById(positionId);
             if (isPositionFind) {
-                Position position = createPosition(updateDTO.getPositionDTO());
+                Position position = createPosition(updateDTO.getPositionDTO(), userId);
                 position.setId(positionId);
                 positionRepository.save(position); // work as update(because of positionId)
                 return position;
@@ -107,6 +112,7 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public Position retrievePositionById(RequestDTO requestDTO) throws BusinessException {
+
         if (Objects.isNull(requestDTO)) {
             throw new BusinessException(401, "Body null");
         }
@@ -119,8 +125,34 @@ public class PositionServiceImpl implements PositionService {
         }
     }
 
-    private Position createPosition(PositionDTO positionDTO) {
+    public List<Position> retrieveUserPositions(RequestDTO requestDTO) throws BusinessException {
+
+        if (Objects.isNull(requestDTO)) {
+            throw new BusinessException(401, "Body null");
+        }
+
+        try {
+            Long userId = Long.valueOf(requestDTO.getData());
+            boolean isUserFound = userRepository.findById(userId).isPresent();
+            if (isUserFound) {
+                List<Position> positions = new LinkedList<>();
+                for (Position position : positionRepository.findAll()) {
+                    if (position.getUserId().compareTo(userId) == 0) {
+                        positions.add(position);
+                    }
+                }
+                return positions;
+            } else {
+                throw new BusinessException(400, "User not found in database");
+            }
+        } catch (Exception e) {
+            throw new BusinessException(400, "Error when try to retrieve user positions.");
+        }
+    }
+
+    private Position createPosition(PositionDTO positionDTO, Long userId) {
         Position position = new Position();
+        position.setUserId(userId);
         position.setLongitude(positionDTO.getLongitude());
         position.setLatitude(positionDTO.getLatitude());
         position.setDate(new Date(positionDTO.getDate().getTime()));

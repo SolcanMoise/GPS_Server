@@ -19,10 +19,11 @@ public interface PositionService {
      * Save a new position into Database
      *
      * @param positionDTO - the position to be saved.
+     * @param userId      - the id of the user
      * @return the created position.
      * @throws BusinessException
      */
-    Position addNewPosition(final PositionDTO positionDTO) throws BusinessException;
+    Position addNewPosition(final PositionDTO positionDTO, final Long userId) throws BusinessException;
 
     /**
      * Get all existing positions from Database;
@@ -43,9 +44,10 @@ public interface PositionService {
      * Update a position
      *
      * @param updateDTO data used for update.
+     * @param userId    - the id of the user
      * @return the position updated.
      */
-    Position updatePositionById(UpdateDTO updateDTO) throws BusinessException;
+    Position updatePositionById(UpdateDTO updateDTO, Long userId) throws BusinessException;
 
     /**
      * Retrieve a position.
@@ -54,4 +56,12 @@ public interface PositionService {
      * @return the retrieved position.
      */
     Position retrievePositionById(RequestDTO requestDTO) throws BusinessException;
+
+    /**
+     * Retrieve all User positions
+     *
+     * @param requestDTO - user data.
+     * @return a list contains all user positions.
+     */
+    List<Position> retrieveUserPositions(RequestDTO requestDTO) throws BusinessException;
 }
